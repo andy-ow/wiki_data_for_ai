@@ -5,13 +5,16 @@ import wikipedia
 from wikipedia import WikipediaPage
 
 
-def __filter_titles(titles: List[str], title_filter: Callable[[str], bool]):
+def __filter_titles(titles: List[str], title_filter: Callable[[str], bool], verbose: bool):
     """
     Get the titles for which title_filter returns true.
     """
-    titles = [title for title in titles if title_filter(title)]
 
-    return titles
+    filtered_titles = [title for title in titles if title_filter(title)]
+    if verbose:
+        print(f'These titles will be ignored: {[t for t in titles if t not in filtered_titles]}.')
+
+    return filtered_titles
 
 
 def __get_wiki_page(title) -> Optional[WikipediaPage]:
@@ -27,7 +30,7 @@ def __get_wiki_page(title) -> Optional[WikipediaPage]:
 
 
 def __recursively_find_all_pages(titles: List[str],
-                                 title_filter: Callable([str], bool),
+                                 title_filter: Callable[[str], bool],
                                  verbose: bool,
                                  titles_so_far: Set[str],
                                  ) -> List[WikipediaPage]:
@@ -38,7 +41,7 @@ def __recursively_find_all_pages(titles: List[str],
     all_pages = []
 
     titles = list(set(titles) - titles_so_far)
-    titles = __filter_titles(titles, title_filter)
+    titles = __filter_titles(titles, title_filter, verbose)
     if verbose:
         print(f'New titles: {len(titles)}\nProcessed titles: {len(titles_so_far)}\n')
     titles_so_far.update(titles)
@@ -59,7 +62,7 @@ def __recursively_find_all_pages(titles: List[str],
 
 
 def find_all_pages(title: str,
-                   title_filter: Callable([str], bool),
+                   title_filter: Callable[[str], bool],
                    verbose: bool = False,
                    ) -> List[WikipediaPage]:
     """
