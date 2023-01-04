@@ -15,4 +15,10 @@ setup(name='wiki_data_for_ai',
             'nltk',
             'pandas',
       ],
+      keywords='openai wikipedia',
+      classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Programming Language :: Python :: 3.11',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence',
+      ],
       zip_safe=False)
