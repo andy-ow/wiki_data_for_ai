@@ -5,7 +5,7 @@ import wikipedia
 from wikipedia import WikipediaPage
 
 
-def __filter_titles(titles: List[str], title_filter: Callable([str], bool)):
+def __filter_titles(titles: List[str], title_filter: Callable[[str], bool]):
     """
     Get the titles for which title_filter returns true.
     """
@@ -22,7 +22,7 @@ def __get_wiki_page(title) -> Optional[WikipediaPage]:
         return wikipedia.page(title)
     except wikipedia.exceptions.DisambiguationError as e:
         return wikipedia.page(e.options[0])
-    except wikipedia.exceptions.PageError as e:
+    except wikipedia.exceptions.PageError:
         return None
 
 
@@ -69,4 +69,4 @@ def find_all_pages(title: str,
     :param verbose: bool
     :return: list of Wikipedia pages
     """
-    return __recursively_find_all_pages([title], title_filter, verbose)
+    return __recursively_find_all_pages(titles=[title], title_filter=title_filter, verbose=verbose, titles_so_far=set())

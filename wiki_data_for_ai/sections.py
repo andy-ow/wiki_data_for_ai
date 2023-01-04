@@ -1,5 +1,5 @@
 import re
-from typing import Set, List, Tuple
+from typing import Set
 from transformers import GPT2TokenizerFast
 
 from nltk.tokenize import sent_tokenize
@@ -31,20 +31,21 @@ def __reduce_long(
     return long_text
 
 
-discard_categories = ['See also', 'References', 'External links', 'Further reading', "Footnotes",
-                      "Bibliography", "Sources", "Citations", "Literature", "Footnotes", "Notes and references",
-                      "Photo gallery", "Works cited", "Photos", "Gallery", "Notes", "References and sources",
-                      "References and notes",
-                      'Zobacz też', 'Przypisy', 'Bibliografia', 'Linki zewnętrzne', 'Uwagi', 'W literaturze pięknej',
-                      'Literatura uzupełniająca', 'Galeria', 'Inne opracowania',
-                      ]
+discard_categories_en_pl = ('See also', 'References', 'External links', 'Further reading', "Footnotes",
+                            "Bibliography", "Sources", "Citations", "Literature", "Footnotes", "Notes and references",
+                            "Photo gallery", "Works cited", "Photos", "Gallery", "Notes", "References and sources",
+                            "References and notes",
+                            'Zobacz też', 'Przypisy', 'Bibliografia', 'Linki zewnętrzne', 'Uwagi',
+                            'W literaturze pięknej',
+                            'Literatura uzupełniająca', 'Galeria', 'Inne opracowania',
+                            )
 
 
 def extract_sections(
         wiki_text: str,
         title: str,
         max_len: int = 1500,
-        discard_categories: Set[str] = discard_categories,
+        discard_categories: Set[str] = discard_categories_en_pl,
 ) -> list[tuple[str, str, str, int]]:
     """
     Extract the sections of a Wikipedia page, discarding the references and other low information sections
@@ -52,7 +53,7 @@ def extract_sections(
     if len(wiki_text) == 0:
         return []
 
-    # find all headings and the coresponding contents
+    # find all headings and the corresponding contents
     headings = re.findall("==+ .* ==+", wiki_text)
     for heading in headings:
         wiki_text = wiki_text.replace(heading, "==+ !! ==+")
